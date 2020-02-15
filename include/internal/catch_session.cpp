@@ -40,11 +40,11 @@ namespace Catch {
             return reporter;
         }
 
-        IStreamingReporterPtr makeReporter(std::shared_ptr<Config> const& config) {
-            if (Catch::getRegistryHub().getReporterRegistry().getListeners().empty()) {
-                return createReporter(config->getReporterName(), config);
-            }
 
+#ifndef CATCH_CONFIG_DEFAULT_REPORTER
+#define CATCH_CONFIG_DEFAULT_REPORTER "console"
+#endif
+        IStreamingReporterPtr makeReporter(std::shared_ptr<Config> const& config) {
             // On older platforms, returning std::unique_ptr<ListeningReporter>
             // when the return type is std::unique_ptr<IStreamingReporter>
             // doesn't compile without a std::move call. However, this causes
@@ -56,9 +56,21 @@ namespace Catch {
             for (auto const& listener : listeners) {
                 multi.addListener(listener->create(Catch::ReporterConfig(config)));
             }
-            multi.addReporter(createReporter(config->getReporterName(), config));
+
+            auto const& reporterNames = config->getReporterNames();
+            if (reporterNames.empty()) {
+               multi.addReporter(createReporter(CATCH_CONFIG_DEFAULT_REPORTER, config));
+            }
+            else {
+               for (auto const& reporterName : config->getReporterNames()) {
+                  multi.addReporter(createReporter(reporterName, config));
+               }
+            }
+
             return ret;
         }
+
+#undef CATCH_CONFIG_DEFAULT_REPORTER
 
         class TestGroup {
         public:

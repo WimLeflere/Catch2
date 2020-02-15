@@ -314,7 +314,7 @@ TEST_CASE( "Process can be configured on command line", "[config][command-line]"
         CHECK(config.shouldDebugBreak == false);
         CHECK(config.abortAfter == -1);
         CHECK(config.noThrow == false);
-        CHECK(config.reporterName == "console");
+        CHECK(config.reporterNames.size() == 0);
 
         Catch::Config cfg(config);
         CHECK_FALSE(cfg.hasTestFilters());
@@ -356,20 +356,27 @@ TEST_CASE( "Process can be configured on command line", "[config][command-line]"
         SECTION("-r/console") {
             CHECK(cli.parse({"test", "-r", "console"}));
 
-            REQUIRE(config.reporterName == "console");
+            CHECK(config.reporterNames.size() == 1);
+            REQUIRE(config.reporterNames[0] == "console");
         }
         SECTION("-r/xml") {
             CHECK(cli.parse({"test", "-r", "xml"}));
 
-            REQUIRE(config.reporterName == "xml");
+            CHECK(config.reporterNames.size() == 1);
+            REQUIRE(config.reporterNames[0] == "xml");
         }
         SECTION("--reporter/junit") {
             CHECK(cli.parse({"test", "--reporter", "junit"}));
 
-            REQUIRE(config.reporterName == "junit");
+            CHECK(config.reporterNames.size() == 1);
+            REQUIRE(config.reporterNames[0] == "junit");
         }
-        SECTION("Only one reporter is accepted") {
-            REQUIRE_FALSE(cli.parse({ "test", "-r", "xml", "-r", "junit" }));
+        SECTION("Multiple reporters are accepted") {
+            CHECK(cli.parse({ "test", "-r", "xml junit" }));
+
+            REQUIRE(config.reporterNames.size() == 2);
+            REQUIRE(config.reporterNames[0] == "xml");
+            REQUIRE(config.reporterNames[1] == "junit");
         }
         SECTION("must match one of the available ones") {
             auto result = cli.parse({"test", "--reporter", "unsupported"});

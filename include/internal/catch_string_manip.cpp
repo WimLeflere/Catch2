@@ -45,6 +45,11 @@ namespace Catch {
         toLowerInPlace( lc );
         return lc;
     }
+    std::string toLower( StringRef ref ) {
+        std::string lc = std::string(ref);
+        toLowerInPlace( lc );
+        return lc;
+    }
     std::string trim( std::string const& str ) {
         static char const* whitespaceChars = "\n\r\t ";
         std::string::size_type start = str.find_first_not_of( whitespaceChars );
