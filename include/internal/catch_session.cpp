@@ -57,13 +57,13 @@ namespace Catch {
                 multi.addListener(listener->create(Catch::ReporterConfig(config)));
             }
 
-            auto const& reporterNames = config->getReporterNames();
-            if (reporterNames.empty()) {
+            auto const& reporters = config->getReporters();
+            if (reporters.empty()) {
                multi.addReporter(createReporter(CATCH_CONFIG_DEFAULT_REPORTER, config));
             }
             else {
-               for (auto const& reporterName : config->getReporterNames()) {
-                  multi.addReporter(createReporter(reporterName, config));
+               for (auto const& reporter : config->getReporters()) {
+                  multi.addReporter(createReporter(reporter.name, config));
                }
             }
 

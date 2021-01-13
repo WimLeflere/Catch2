@@ -47,7 +47,7 @@ namespace Catch {
 
     std::string Config::getProcessName() const { return m_data.processName; }
 
-    std::vector<std::string> const& Config::getReporterNames() const { return m_data.reporterNames; }
+    std::vector<ReporterData> const& Config::getReporters() const { return m_data.reporters; }
 
     std::vector<std::string> const& Config::getTestsOrTags() const { return m_data.testsOrTags; }
     std::vector<std::string> const& Config::getSectionsToRun() const { return m_data.sectionsToRun; }

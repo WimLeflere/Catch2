@@ -314,7 +314,7 @@ TEST_CASE( "Process can be configured on command line", "[config][command-line]"
         CHECK(config.shouldDebugBreak == false);
         CHECK(config.abortAfter == -1);
         CHECK(config.noThrow == false);
-        CHECK(config.reporterNames.size() == 0);
+        CHECK(config.reporters.size() == 0);
 
         Catch::Config cfg(config);
         CHECK_FALSE(cfg.hasTestFilters());
@@ -356,27 +356,27 @@ TEST_CASE( "Process can be configured on command line", "[config][command-line]"
         SECTION("-r/console") {
             CHECK(cli.parse({"test", "-r", "console"}));
 
-            CHECK(config.reporterNames.size() == 1);
-            REQUIRE(config.reporterNames[0] == "console");
+            CHECK(config.reporters.size() == 1);
+            REQUIRE(config.reporters[0].name == "console");
         }
         SECTION("-r/xml") {
             CHECK(cli.parse({"test", "-r", "xml"}));
 
-            CHECK(config.reporterNames.size() == 1);
-            REQUIRE(config.reporterNames[0] == "xml");
+            CHECK(config.reporters.size() == 1);
+            REQUIRE(config.reporters[0].name == "xml");
         }
         SECTION("--reporter/junit") {
             CHECK(cli.parse({"test", "--reporter", "junit"}));
 
-            CHECK(config.reporterNames.size() == 1);
-            REQUIRE(config.reporterNames[0] == "junit");
+            CHECK(config.reporters.size() == 1);
+            REQUIRE(config.reporters[0].name == "junit");
         }
         SECTION("Multiple reporters are accepted") {
             CHECK(cli.parse({ "test", "-r", "xml junit" }));
 
-            REQUIRE(config.reporterNames.size() == 2);
-            REQUIRE(config.reporterNames[0] == "xml");
-            REQUIRE(config.reporterNames[1] == "junit");
+            REQUIRE(config.reporters.size() == 2);
+            REQUIRE(config.reporters[0].name == "xml");
+            REQUIRE(config.reporters[1].name == "junit");
         }
         SECTION("must match one of the available ones") {
             auto result = cli.parse({"test", "--reporter", "unsupported"});

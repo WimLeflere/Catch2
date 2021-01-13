@@ -26,6 +26,11 @@ namespace Catch {
 
     struct IStream;
 
+    struct ReporterData {
+       std::string name;
+       std::string outputFilename;
+    };
+
     struct ConfigData {
         bool listTests = false;
         bool listTags = false;
@@ -60,7 +65,7 @@ namespace Catch {
         std::string name;
         std::string processName;
 
-        std::vector<std::string> reporterNames;
+        std::vector<ReporterData> reporters;
         std::vector<std::string> testsOrTags;
         std::vector<std::string> sectionsToRun;
     };
@@ -81,7 +86,7 @@ namespace Catch {
         bool listReporters() const;
 
         std::string getProcessName() const;
-        std::vector<std::string> const& getReporterNames() const;
+        std::vector<ReporterData> const& getReporters() const;
 
         std::vector<std::string> const& getTestsOrTags() const override;
         std::vector<std::string> const& getSectionsToRun() const override;

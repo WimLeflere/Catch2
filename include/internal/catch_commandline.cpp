@@ -117,13 +117,20 @@ namespace Catch {
             IReporterRegistry::FactoryMap const& factories = getRegistryHub().getReporterRegistry().getFactories();
 
             for (auto const& reporter : splitStringRef(reporters, ' ')) {
-               auto lcReporter = toLower(reporter);
-               auto result = factories.find(lcReporter);
+               auto const reporterInfo = splitStringRef(reporter, ':');
 
-               if (factories.end() != result)
-                  config.reporterNames.push_back(lcReporter);
-               else
-                  return ParserResult::runtimeError("Unrecognized reporter, '" + std::string(reporter) + "'. Check available with --list-reporters");
+               if (reporterInfo.size() == 2)
+               {
+                  auto lcReporterName = toLower(reporterInfo[0]);
+                  auto result = factories.find(lcReporterName);
+
+                  if (factories.end() != result) {
+                     auto const outputFilename = std::string(reporterInfo[1]);
+                     config.reporters.push_back(ReporterData{ lcReporterName, outputFilename });
+                  }
+                  else
+                     return ParserResult::runtimeError("Unrecognized reporter, '" + std::string(reporter) + "'. Check available with --list-reporters");
+               }
             }
 
             return ParserResult::ok( ParseResultType::Matched );
